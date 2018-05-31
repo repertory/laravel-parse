@@ -20,8 +20,10 @@ class ServiceProvider extends Provider
         }
 
         // 初始化Parse
-        ParseClient::initialize(config('parse.app_id', ''), config('parse.rest_key', ''), config('parse.master_key', ''));
-        ParseClient::setServerURL(config('parse.server_url', ''), config('parse.mount_path', ''));
+        if (config('parse.server_url')) {
+            ParseClient::initialize(config('parse.app_id', ''), config('parse.rest_key', ''), config('parse.master_key', ''));
+            ParseClient::setServerURL(config('parse.server_url', ''), config('parse.mount_path', ''));
+        }
     }
 
     public function register()
