@@ -3,7 +3,7 @@
 namespace LaravelParse;
 
 use Parse\ParseClient;
-use Parse\ParseSessionStorage;
+use Parse\ParseMemoryStorage;
 use Illuminate\Support\ServiceProvider as Provider;
 
 class ServiceProvider extends Provider
@@ -28,8 +28,7 @@ class ServiceProvider extends Provider
             if (config('session')) {
                 ParseClient::setStorage(new LaravelSessionStorage($this->app->session));
             } else {
-                @session_start();
-                ParseClient::setStorage(new ParseSessionStorage());
+                ParseClient::setStorage(new ParseMemoryStorage());
             }
         }
     }
