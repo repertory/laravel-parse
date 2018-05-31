@@ -1,6 +1,6 @@
 <?php
 
-namespace LaravelModule;
+namespace LaravelParse;
 
 use Parse\ParseClient;
 use Illuminate\Support\ServiceProvider as Provider;
