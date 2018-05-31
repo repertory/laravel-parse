@@ -1,5 +1,11 @@
 # laravel-parse
 
+[![Latest Stable Version](https://poser.pugx.org/wangdong/laravel-parse/version)](https://packagist.org/packages/wangdong/laravel-parse)
+[![Total Downloads](https://poser.pugx.org/wangdong/laravel-parse/downloads)](https://packagist.org/packages/wangdong/laravel-parse)
+[![Latest Unstable Version](https://poser.pugx.org/wangdong/laravel-parse/v/unstable)](//packagist.org/packages/wangdong/laravel-parse)
+[![License](https://poser.pugx.org/wangdong/laravel-parse/license)](https://packagist.org/packages/wangdong/laravel-parse)
+[![composer.lock available](https://poser.pugx.org/wangdong/laravel-parse/composerlock)](https://packagist.org/packages/wangdong/laravel-parse)
+
 ## 安装
 ```
 composer require wangdong/laravel-parse
