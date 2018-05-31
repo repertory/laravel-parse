@@ -1,0 +1,40 @@
+{
+  "name": "wangdong/laravel-parse",
+  "keywords": [
+    "wangdong",
+    "parse",
+    "laravel",
+    "lumen",
+    "laravel-parse"
+  ],
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "wangdong",
+      "email": "mail@wangdong.io"
+    }
+  ],
+  "require": {
+    "illuminate/support": "~5.1",
+    "parse/php-sdk": "~1.4"
+  },
+  "suggest": {
+    "wangdong/laravel-module": ""
+  },
+  "autoload": {
+    "psr-4": {
+      "LaravelParse\\": "src/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0.x-dev"
+    },
+    "laravel": {
+      "providers": [
+        "LaravelParse\\ServiceProvider"
+      ]
+    }
+  }
+}
