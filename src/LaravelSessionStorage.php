@@ -3,53 +3,44 @@
 namespace LaravelParse;
 
 use Parse\ParseStorageInterface;
-use Illuminate\Session\SessionManager;
+use Illuminate\Support\Facades\Session;
 
 class LaravelSessionStorage implements ParseStorageInterface
 {
 
-    private $session;
-
-    public function __construct(SessionManager $session)
-    {
-        $this->session = $session;
-    }
-
     public function set($key, $value)
     {
-        $this->session->put($key, $value);
+        return Session::put($key, $value);
     }
 
     public function remove($key)
     {
-        $this->session->forget($key);
+        return Session::remove($key);
     }
 
     public function get($key)
     {
-        if ($this->session->has($key)) {
-            return $this->session->get($key);
-        }
+        return Session::get($key);
     }
 
     public function clear()
     {
-        $this->session->forget();
+        return Session::flush();
     }
 
     public function save()
     {
-        //
+        return Session::save();
     }
 
     public function getKeys()
     {
-        return array_keys($this->session->get());
+        return array_keys(Session::all());
     }
 
     public function getAll()
     {
-        return $this->session->get();
+        return Session::all();
     }
 
 }
