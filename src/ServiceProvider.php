@@ -3,6 +3,7 @@
 namespace LaravelParse;
 
 use Parse\ParseClient;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider as Provider;
 
 class ServiceProvider extends Provider
@@ -28,6 +29,14 @@ class ServiceProvider extends Provider
                 ParseClient::setStorage(new LaravelSessionStorage());
             }
         }
+
+        Auth::extend('parse', function () {
+            return new ParseGuard();
+        });
+
+        Auth::provider('parse', function () {
+            return new UserProvider();
+        });
     }
 
     public function register()
