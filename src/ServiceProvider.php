@@ -31,7 +31,7 @@ class ServiceProvider extends Provider
         }
 
         Auth::extend('parse', function () {
-            return new ParseGuard();
+            return new ParseGuard(new User());
         });
 
         Auth::provider('parse', function () {
