@@ -2,7 +2,6 @@
 
 namespace LaravelParse;
 
-use Parse\ParseUser;
 use Parse\ParseClient;
 use Parse\ParseException;
 use Parse\ParseMemoryStorage;
@@ -13,12 +12,17 @@ use Illuminate\Contracts\Auth\Authenticatable;
 class ParseGuard implements Guard, StatefulGuard
 {
 
+    public function __construct(User $user)
+    {
+        $this->user = $user;
+    }
+
     /**
      * @return bool
      */
     public function check()
     {
-        return !!$this->user();
+        return $this->user->isCurrent();
     }
 
     /**
@@ -26,15 +30,15 @@ class ParseGuard implements Guard, StatefulGuard
      */
     public function guest()
     {
-        return !$this->user();
+        return !$this->user->isCurrent();
     }
 
     /**
-     * @return Authenticatable|null|ParseUser
+     * @return Authenticatable|null|\Parse\ParseUser
      */
     public function user()
     {
-        return ParseUser::getCurrentUser();
+        return $this->user->getCurrentUser();
     }
 
     /**
@@ -42,7 +46,7 @@ class ParseGuard implements Guard, StatefulGuard
      */
     public function id()
     {
-        return $this->user()->getObjectId();
+        return $this->user->getObjectId();
     }
 
     /**
@@ -52,21 +56,16 @@ class ParseGuard implements Guard, StatefulGuard
      */
     public function validate(array $credentials = [])
     {
-        try {
-            $user = ParseUser::logIn($this->getUsernameFromCredentials($credentials), $credentials['password']);
-            return true;
-        } catch (ParseException $error) {
-            return false;
-        }
+        return $this->attempt($credentials);
     }
 
     /**
      * @param Authenticatable $user
-     * @return ParseUser|void
+     * @return \Parse\ParseUser|void
      */
     public function setUser(Authenticatable $user)
     {
-        return ParseUser::become($user->getSessionToken());
+        return $this->user->become($user->getSessionToken());
     }
 
     /**
@@ -79,7 +78,7 @@ class ParseGuard implements Guard, StatefulGuard
     public function attempt(array $credentials = [], $remember = false)
     {
         try {
-            ParseUser::logIn($this->getUsernameFromCredentials($credentials), $credentials['password']);
+            $this->user->logIn($this->getUsernameFromCredentials($credentials), $credentials['password']);
             return true;
         } catch (ParseException $error) {
             return false;
@@ -95,12 +94,7 @@ class ParseGuard implements Guard, StatefulGuard
     public function once(array $credentials = [])
     {
         ParseClient::setStorage(new ParseMemoryStorage());
-        try {
-            ParseUser::logIn($this->getUsernameFromCredentials($credentials), $credentials['password']);
-            return true;
-        } catch (ParseException $error) {
-            return false;
-        }
+        return $this->attempt($credentials);
     }
 
     /**
@@ -112,7 +106,8 @@ class ParseGuard implements Guard, StatefulGuard
      */
     public function login(Authenticatable $user, $remember = false)
     {
-        return ParseUser::become($user->getCurrentUser()->getSessionToken());
+        $this->user->become($user->getSessionToken());
+        return $this->user;
     }
 
     /**
@@ -124,7 +119,7 @@ class ParseGuard implements Guard, StatefulGuard
      */
     public function loginUsingId($id, $remember = false)
     {
-        $query = ParseUser::query();
+        $query = User::query();
         return $this->login($query->get($id));
     }
 
@@ -137,8 +132,7 @@ class ParseGuard implements Guard, StatefulGuard
     public function onceUsingId($id)
     {
         ParseClient::setStorage(new ParseMemoryStorage());
-        $query = ParseUser::query();
-        return $this->login($query->get($id));
+        return $this->loginUsingId($id);
     }
 
     /**
@@ -158,7 +152,7 @@ class ParseGuard implements Guard, StatefulGuard
      */
     public function logout()
     {
-        return ParseUser::logOut();
+        return $this->user->logOut();
     }
 
     /**
