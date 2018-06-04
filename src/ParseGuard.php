@@ -67,7 +67,12 @@ class ParseGuard implements Guard, StatefulGuard
      */
     public function setUser(Authenticatable $user)
     {
-        return $this->user->become($user->getSessionToken());
+        if ($user->getSessionToken()) {
+            return $this->user->become($user->getSessionToken());
+        }
+
+        // TODO 非账号密码登陆的情况无法获取sessionToken，后面想到解决办法再处理
+        return null;
     }
 
     /**
@@ -108,8 +113,7 @@ class ParseGuard implements Guard, StatefulGuard
      */
     public function login(Authenticatable $user, $remember = false)
     {
-        // TODO 目前仅支持账号密码登陆
-        return $this->user;
+        return $this->setUser($user);
     }
 
     /**
