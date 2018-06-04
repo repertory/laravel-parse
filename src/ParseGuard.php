@@ -12,6 +12,8 @@ use Illuminate\Contracts\Auth\Authenticatable;
 class ParseGuard implements Guard, StatefulGuard
 {
 
+    protected $viaRemember = false;
+
     public function __construct(User $user)
     {
         $this->user = $user;
@@ -30,7 +32,7 @@ class ParseGuard implements Guard, StatefulGuard
      */
     public function guest()
     {
-        return !$this->user->isCurrent();
+        return !$this->user->isAuthenticated();
     }
 
     /**
@@ -106,7 +108,7 @@ class ParseGuard implements Guard, StatefulGuard
      */
     public function login(Authenticatable $user, $remember = false)
     {
-        $this->user->become($user->getSessionToken());
+        // TODO 目前仅支持账号密码登陆
         return $this->user;
     }
 
@@ -120,7 +122,7 @@ class ParseGuard implements Guard, StatefulGuard
     public function loginUsingId($id, $remember = false)
     {
         $query = User::query();
-        return $this->login($query->get($id));
+        return $this->login($query->get($id, true));
     }
 
     /**
@@ -132,7 +134,7 @@ class ParseGuard implements Guard, StatefulGuard
     public function onceUsingId($id)
     {
         ParseClient::setStorage(new ParseMemoryStorage());
-        return $this->loginUsingId($id);
+        return $this->loginUsingId($id, true);
     }
 
     /**
@@ -142,7 +144,7 @@ class ParseGuard implements Guard, StatefulGuard
      */
     public function viaRemember()
     {
-        return false;
+        return $this->viaRemember;
     }
 
     /**
@@ -170,4 +172,5 @@ class ParseGuard implements Guard, StatefulGuard
             throw new ParseException('$credentials must contain either a "username" or "email" key');
         }
     }
+
 }

@@ -3,6 +3,7 @@
 namespace LaravelParse;
 
 use Parse\ParseUser;
+use Parse\ParseObject;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 class User extends ParseUser implements Authenticatable

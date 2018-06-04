@@ -30,13 +30,16 @@ class ServiceProvider extends Provider
             }
         }
 
-        Auth::extend('parse', function () {
-            return new ParseGuard(new User());
-        });
-
-        Auth::provider('parse', function () {
-            return new UserProvider();
-        });
+        if (config('parse.auth')) {
+            User::registerSubclass();
+            $authenticatable = new User();
+            Auth::extend('parse', function () use ($authenticatable) {
+                return new ParseGuard($authenticatable);
+            });
+            Auth::provider('parse', function () use ($authenticatable) {
+                return new ParseProvider($authenticatable);
+            });
+        }
     }
 
     public function register()
